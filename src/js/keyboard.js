@@ -298,7 +298,13 @@ class Keyboard {
                 break;
             }
             }
+            fragment.appendChild(keyElement);
+  
+            if (insertLineBreak) {
+                fragment.appendChild(document.createElement('br'));
+            }
         });
+        return fragment;
     }
 
     toggleCapsLock() {
@@ -336,7 +342,94 @@ class Keyboard {
         if (obj.selectionStart !== false) return obj.selectionStart;
         return 0;
     }
+
+    initReal() {
+        document.addEventListener('keydown', (event) => {
+          const key = document.querySelector(`button[data-key='${event.code}']`);
+          const a = this.getCaretPos();
+          event.preventDefault();
+          switch (event.code) {
+            case 'Backspace':
+              this.properties.value = document.querySelector('.window-enter').value;
+              this.properties.value = this.properties.value.split('');
+              this.properties.value.splice(this.getCaretPos() - 1, 1);
+              this.properties.value = this.properties.value.join('');
+              document.querySelector('.window-enter').value = this.properties.value;
+              this.set(document.querySelector('.window-enter'), a - 1, a - 1);
+              break;
+    
+            case 'Tab':
+              this.properties.value = document.querySelector('.window-enter').value;
+              this.properties.value += '\t';
+              document.querySelector('.window-enter').value = this.properties.value;
+              break;
+    
+            case 'CapsLock':
+              this.toggleCapsLock();
+              break;
+    
+            case 'Enter':
+              document.querySelector('.window-enter').value += '\n';
+              break;
+    
+            case 'ShiftLeft':
+              this.toggleCapsLock();
+              break;
+    
+            case 'ControlLeft':
+              this.toggleCapsLock();
+              break;
+            case 'ControlRight':
+              this.toggleCapsLock();
+              break;
+            case 'AltLeft':
+              this.toggleCapsLock();
+              break;
+            case 'AltRight':
+              this.toggleCapsLock();
+              break;
+    
+            case 'Space':
+              document.querySelector('.window-enter').value += ' ';
+              break;
+    
+            case 'Delete':
+              this.properties.value = document.querySelector('.window-enter').value;
+              this.properties.value = this.properties.value.split('');
+              this.properties.value.splice(this.getCaretPos(), 1);
+              this.properties.value = this.properties.value.join('');
+              document.querySelector('.window-enter').value = this.properties.value;
+              this.set(document.querySelector('.window-enter'), a, a);
+              break;
+    
+            default:
+              this.keyLayout.forEach((item) => {
+                if (item[2] === event.code) {
+                  if (!this.properties.isRussian) {
+                    if (!this.properties.capsLock) {
+                      document.querySelector('.window-enter').value += item[0].toLowerCase();
+                    }
+                    if (this.properties.capsLock) {
+                      document.querySelector('.window-enter').value += item[0].toUpperCase();
+                    }
+                  } else {
+                    if (!this.properties.capsLock) {
+                      document.querySelector('.window-enter').value += item[1].toLowerCase();
+                    }
+                    if (this.properties.capsLock) {
+                      document.querySelector('.window-enter').value += item[1].toUpperCase();
+                    }
+                  }
+                }
+              });
+          }
+          key.classList.add('active');
+        });
+        document.addEventListener('keyup', (event) => {
+            const key = document.querySelector(`button[data-key='${event.code}']`);
+            if (event.code === 'ShiftLeft') {
+              this.toggleCapsLock();
+            }
+            key.classList.remove('active');
+          });
 }
-
-
-const keyboard = new Keyboard();
