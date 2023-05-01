@@ -1,3 +1,5 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
 
 class Keyboard {
@@ -81,13 +83,15 @@ class Keyboard {
         ];
     }
 
+   
+
     initTextarea() {
         this.elements.textarea = document.createElement('textarea');
         this.elements.textarea.classList.add('window-enter');
         document.body.append(this.elements.textarea);
     }
 
-    initKeyboard() {
+    initVirtual() {
         this.elements.main = document.createElement('div');
         this.elements.keysContainer = document.createElement('div');
 
@@ -99,8 +103,13 @@ class Keyboard {
         this.elements.main.append(this.elements.keysContainer);
         document.body.append(this.elements.main);
 
-        if (this.properties.isRussian === false) localStorage.setItem('lang', 'false');
-        if (this.properties.isRussian === true) localStorage.setItem('lang', 'true');
+        if (this.properties.isRussian === false) {
+            localStorage.setItem('lang', 'false');
+        }
+
+        if (this.properties.isRussian === true) {
+            localStorage.setItem('lang', 'true');
+        }
     }
 
     createKeys() {
@@ -119,13 +128,13 @@ class Keyboard {
                 keyElement.classList.add('dark');
                 keyElement.innerHTML = '<span>Backspace</span>';
                 keyElement.addEventListener('click', () => {
-                    const numSymbols = this.getCaretPos();
+                    const a = this.getCaretPos();
                     this.properties.value = document.querySelector('.window-enter').value;
-                    this.properties.value = this.properties.value.split(',');
+                    this.properties.value = this.properties.value.split('');
                     this.properties.value.splice(this.getCaretPos() - 1, 1);
                     this.properties.value = this.properties.value.join('');
                     document.querySelector('.window-enter').value = this.properties.value;
-                    this.set(document.querySelector('.window-enter'), numSymbols - 1, numSymbols - 1);
+                    this.set(document.querySelector('.window-enter'), a - 1, a - 1);
                 });
                 break;
 
@@ -299,7 +308,7 @@ class Keyboard {
             }
             }
             fragment.appendChild(keyElement);
-  
+
             if (insertLineBreak) {
                 fragment.appendChild(document.createElement('br'));
             }
@@ -321,17 +330,17 @@ class Keyboard {
         });
     }
 
-    static set(ctrl, start, end) {
+    set(ctrl, start, end) {
         if (ctrl.setSelectionRange) {
             ctrl.focus();
             ctrl.setSelectionRange(start, end);
         }
     }
 
-    static getCaretPos() {
+    getCaretPos() {
         const obj = document.querySelector('.window-enter');
         obj.focus();
-        if (document.selection) {
+        if (document.selection) { // IE
             const sel = document.selection.createRange();
             const clone = sel.duplicate();
             sel.collapse(true);
@@ -339,7 +348,7 @@ class Keyboard {
             clone.setEndPoint('EndToEnd', sel);
             return clone.text.length;
         }
-        if (obj.selectionStart !== false) return obj.selectionStart;
+        if (obj.selectionStart !== false) return obj.selectionStart; // Gecko
         return 0;
     }
 
@@ -357,25 +366,25 @@ class Keyboard {
                 document.querySelector('.window-enter').value = this.properties.value;
                 this.set(document.querySelector('.window-enter'), a - 1, a - 1);
                 break;
-    
+
             case 'Tab':
                 this.properties.value = document.querySelector('.window-enter').value;
                 this.properties.value += '\t';
                 document.querySelector('.window-enter').value = this.properties.value;
                 break;
-    
+
             case 'CapsLock':
                 this.toggleCapsLock();
                 break;
-    
+
             case 'Enter':
                 document.querySelector('.window-enter').value += '\n';
                 break;
-    
+
             case 'ShiftLeft':
                 this.toggleCapsLock();
                 break;
-    
+
             case 'ControlLeft':
                 this.toggleCapsLock();
                 break;
@@ -388,11 +397,11 @@ class Keyboard {
             case 'AltRight':
                 this.toggleCapsLock();
                 break;
-    
+
             case 'Space':
                 document.querySelector('.window-enter').value += ' ';
                 break;
-    
+
             case 'Delete':
                 this.properties.value = document.querySelector('.window-enter').value;
                 this.properties.value = this.properties.value.split('');
@@ -401,7 +410,7 @@ class Keyboard {
                 document.querySelector('.window-enter').value = this.properties.value;
                 this.set(document.querySelector('.window-enter'), a, a);
                 break;
-    
+
             default:
                 this.keyLayout.forEach((item) => {
                     if (item[2] === event.code) {
@@ -432,27 +441,28 @@ class Keyboard {
             }
             key.classList.remove('active');
         });
+
         function runOnKeys(func, ...codes) {
             const pressed = new Set();
-      
+
             document.addEventListener('keydown', (event) => {
                 pressed.add(event.code);
-      
+
                 for (let i = 0; i < codes.length; i += 1) {
                     if (!pressed.has(codes[i])) {
                         return;
                     }
                 }
-      
+
                 pressed.clear();
                 func();
             });
-      
+
             document.addEventListener('keyup', (event) => {
                 pressed.delete(event.code);
             });
         }
-      
+
         runOnKeys(
             () => {
                 setTimeout(() => {
@@ -465,4 +475,31 @@ class Keyboard {
             'AltLeft',
         );
     }
+
+    getStorage() {
+        const lang = localStorage.getItem(this.properties.isRussian);
+        return lang;
+    }
 }
+const keyboard = new Keyboard();
+
+window.addEventListener('DOMContentLoaded', () => {
+    keyboard.initTextarea();
+    keyboard.initVirtual();
+    keyboard.initReal();
+});
+
+
+const title = document.createElement('div');
+title.classList.add('title');
+title.innerHTML = 'RSS Virtual Keyboard';
+document.body.prepend(title);
+
+const instruction = document.createElement('div');
+instruction.classList.add('instruction');
+instruction.innerHTML = `Клавиатура создана в ОС Windows <br>
+     Для переключения языка комбинация: левыe ctrl + alt`;
+document.body.after(instruction);
+
+// eslint-disable-next-line no-console
+console.log(keyboard.properties.isRussian = keyboard.getStorage());

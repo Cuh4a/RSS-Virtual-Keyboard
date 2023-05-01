@@ -38,46 +38,57 @@ h6 {
 html {
     height: 100%;
     font-size: 15px;
-    scroll-behavior:smooth;
+    scroll-behavior: smooth;
 }
 
 body {
-    height: 100%;
+    height: 100vh;
     width: 100%;
     background: url('../assets/img/main-image.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 }
 
-.title{
-    margin-top: 20px;
+.title {
+    margin-top: 0px;
     text-align: center;
-    font-size: 30px;
-    color:  rgb(40, 129, 22);
+    font-size: 60px;
+    color: #FF00FF;
 }
 
-.instruction{
+.instruction {
     margin: 0px auto;
     text-align: center;
     font-size: 22px;
-    line-height: 2
+    font-weight: 700;
+    line-height: 2;
+    color: #9932CC;
 }
 
-.window_enter{
+.window-enter {
     display: block;
     width: 770px;
     height: 200px;
     margin-bottom: 20px;
+    color: #FF00FF;
+    font-weight: 700;
     font-size: 20px;
-    background-color: rgb(232, 254, 254);
+    background-color: transparent;
     margin: 20px auto;
+    border: 2px solid #AB47BC;
+    outline: none;
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
 }
 
-.keyboard{
-    border: 2px solid black;
+.keyboard {
+    border: 2px solid #AB47BC;
     padding: 5px;
     margin: 0 auto;
-    background-color: rgb(200, 206, 211);
+    background-color: transparent;
     width: 770px;
     border-radius: 7px;
 }
@@ -86,13 +97,13 @@ body {
     text-align: center;
 }
 
-.key{
+.key {
     display: inline-block;
     height: 40px;
     width: 40px;
     margin: 5px;
     border-radius: 3px;
-    background-color: #444444;;
+    background-color: #FF00FF;
     user-select: none;
     cursor: pointer;
     text-align: center;
@@ -100,44 +111,44 @@ body {
     border: none;
 }
 
-.key:hover{
-    background-color: rgb(122, 158, 146);
+.key:hover {
+    background-color: #9932CC;
 }
 
-.key:active{
+.key:active {
     border-radius: 20px;
-    background-color: rgb(16, 239, 68);
-    
+    background-color: #FF1493;
+
 }
 
-.dark{
-    background-color: #222222;
+.dark {
+    background-color: #8B008B;
     width: 93px;
 }
 
-.dark-small{
-    background-color: #222222;
+.dark-small {
+    background-color: #8B008B;
     width: 40px;
 }
 
-.backspace{
+.backspace {
     width: 100px;
     padding: 0 5px;
 }
 
-.space{
+.space {
     width: 340px;
 }
 
-.active{
-    background-color: rgb(16, 239, 68);
+.active {
+    background-color: #FF1493;
     border-radius: 220px;
 }
 
-.big-key{
+.big-key {
     width: 100px;
 }
 
-span{
+span {
     color: aliceblue;
 }
