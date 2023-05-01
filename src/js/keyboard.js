@@ -146,8 +146,157 @@ class Keyboard {
                     this.toggleCapsLock();
                 });
                 break;
-            default:
+
+            case 'Enter':
+                keyElement.classList.add('dark');
+                keyElement.innerHTML = '<span>Enter</span>';
+                keyElement.addEventListener('click', () => {
+                    this.properties.value = document.querySelector('.window-enter').value;
+                    this.properties.value += '\n';
+                    document.querySelector('.window-enter').value = this.properties.value;
+                });
                 break;
+
+            case 'ShiftLeft':
+                keyElement.classList.add('dark');
+                keyElement.innerHTML = '<span>Shift</span>';
+                keyElement.addEventListener('click', () => {
+                    this.toggleCapsLock();
+                });
+                break;
+
+            case 'ShiftRight':
+                keyElement.classList.add('dark');
+                keyElement.innerHTML = '<span>Shift</span>';
+                keyElement.addEventListener('click', () => {
+                    this.toggleCapsLock();
+                });
+                break;
+
+            case 'ControlLeft':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>Ctrl</span>';
+                keyElement.addEventListener('click', () => {
+                    this.toggleCapsLock();
+                });
+                break;
+
+            case 'ControlRight':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>Ctrl</span>';
+                keyElement.addEventListener('click', () => {
+                    this.toggleCapsLock();
+                });
+                break;
+
+            case 'AltLeft':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>Alt</span>';
+                keyElement.addEventListener('click', () => {
+                    this.toggleCapsLock();
+                });
+                break;
+
+            case 'AltRight':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>Alt</span>';
+                keyElement.addEventListener('click', () => {
+                    this.toggleCapsLock();
+                });
+                break;
+
+            case 'Space':
+                keyElement.classList.add('space');
+                keyElement.innerHTML = '<span> <br>  </span>';
+                keyElement.addEventListener('click', () => {
+                    this.properties.value = document.querySelector('.window-enter').value;
+                    this.properties.value += ' ';
+                    document.querySelector('.window-enter').value = this.properties.value;
+                });
+                break;
+
+            case 'MetaLeft':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>Win</span>';
+                break;
+
+            case 'ArrowUp':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>▲</span>';
+                keyElement.addEventListener('click', () => {
+                    this.properties.value = document.querySelector('.window-enter').value;
+                    this.properties.value += '▲';
+                    document.querySelector('.window-enter').value = this.properties.value;
+                });
+                break;
+
+            case 'ArrowLeft':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>◄</span>';
+                keyElement.addEventListener('click', () => {
+                    this.properties.value = document.querySelector('.window-enter').value;
+                    this.properties.value += '◄';
+                    document.querySelector('.window-enter').value = this.properties.value;
+                });
+                break;
+
+            case 'ArrowDown':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>▼</span>';
+                keyElement.addEventListener('click', () => {
+                    this.properties.value = document.querySelector('.window-enter').value;
+                    this.properties.value += '▼';
+                    document.querySelector('.window-enter').value = this.properties.value;
+                });
+                break;
+
+            case 'ArrowRight':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>►</span>';
+                keyElement.addEventListener('click', () => {
+                    this.properties.value = document.querySelector('.window-enter').value;
+                    this.properties.value += '►';
+                    document.querySelector('.window-enter').value = this.properties.value;
+                });
+                break;
+            case 'Delete':
+                keyElement.classList.add('dark-small');
+                keyElement.innerHTML = '<span>Del</span>';
+                keyElement.addEventListener('click', () => {
+                    const a = this.getCaretPos();
+                    this.properties.value = document.querySelector('.window-enter').value;
+                    this.properties.value = this.properties.value.split('');
+                    this.properties.value.splice(this.getCaretPos(), 1);
+                    this.properties.value = this.properties.value.join('');
+                    document.querySelector('.window-enter').value = this.properties.value;
+                    this.set(document.querySelector('.window-enter'), a, a);
+                });
+                break;
+
+            default: {
+                const a = key[0];
+                const b = key[1];
+                let lenguageLetter;
+                if (!this.properties.isRussian) {
+                    lenguageLetter = a;
+                } else {
+                    lenguageLetter = b;
+                }
+
+                keyElement.textContent = lenguageLetter.toLowerCase();
+                keyElement.addEventListener('click', () => {
+                    if (this.properties.capsLock) {
+                        this.properties.value = document.querySelector('.window-enter').value;
+                        this.properties.value += lenguageLetter.toUpperCase();
+                    } else {
+                        this.properties.value = document.querySelector('.window-enter').value;
+                        this.properties.value += lenguageLetter.toLowerCase();
+                    }
+
+                    document.querySelector('.window-enter').value = this.properties.value;
+                });
+                break;
+            }
             }
         });
     }
@@ -164,6 +313,13 @@ class Keyboard {
                 }
             }
         });
+    }
+
+    static set(ctrl, start, end) {
+        if (ctrl.setSelectionRange) {
+            ctrl.focus();
+            ctrl.setSelectionRange(start, end);
+        }
     }
 
     static getCaretPos() {
