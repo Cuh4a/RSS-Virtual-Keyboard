@@ -345,91 +345,124 @@ class Keyboard {
 
     initReal() {
         document.addEventListener('keydown', (event) => {
-          const key = document.querySelector(`button[data-key='${event.code}']`);
-          const a = this.getCaretPos();
-          event.preventDefault();
-          switch (event.code) {
+            const key = document.querySelector(`button[data-key='${event.code}']`);
+            const a = this.getCaretPos();
+            event.preventDefault();
+            switch (event.code) {
             case 'Backspace':
-              this.properties.value = document.querySelector('.window-enter').value;
-              this.properties.value = this.properties.value.split('');
-              this.properties.value.splice(this.getCaretPos() - 1, 1);
-              this.properties.value = this.properties.value.join('');
-              document.querySelector('.window-enter').value = this.properties.value;
-              this.set(document.querySelector('.window-enter'), a - 1, a - 1);
-              break;
+                this.properties.value = document.querySelector('.window-enter').value;
+                this.properties.value = this.properties.value.split('');
+                this.properties.value.splice(this.getCaretPos() - 1, 1);
+                this.properties.value = this.properties.value.join('');
+                document.querySelector('.window-enter').value = this.properties.value;
+                this.set(document.querySelector('.window-enter'), a - 1, a - 1);
+                break;
     
             case 'Tab':
-              this.properties.value = document.querySelector('.window-enter').value;
-              this.properties.value += '\t';
-              document.querySelector('.window-enter').value = this.properties.value;
-              break;
+                this.properties.value = document.querySelector('.window-enter').value;
+                this.properties.value += '\t';
+                document.querySelector('.window-enter').value = this.properties.value;
+                break;
     
             case 'CapsLock':
-              this.toggleCapsLock();
-              break;
+                this.toggleCapsLock();
+                break;
     
             case 'Enter':
-              document.querySelector('.window-enter').value += '\n';
-              break;
+                document.querySelector('.window-enter').value += '\n';
+                break;
     
             case 'ShiftLeft':
-              this.toggleCapsLock();
-              break;
+                this.toggleCapsLock();
+                break;
     
             case 'ControlLeft':
-              this.toggleCapsLock();
-              break;
+                this.toggleCapsLock();
+                break;
             case 'ControlRight':
-              this.toggleCapsLock();
-              break;
+                this.toggleCapsLock();
+                break;
             case 'AltLeft':
-              this.toggleCapsLock();
-              break;
+                this.toggleCapsLock();
+                break;
             case 'AltRight':
-              this.toggleCapsLock();
-              break;
+                this.toggleCapsLock();
+                break;
     
             case 'Space':
-              document.querySelector('.window-enter').value += ' ';
-              break;
+                document.querySelector('.window-enter').value += ' ';
+                break;
     
             case 'Delete':
-              this.properties.value = document.querySelector('.window-enter').value;
-              this.properties.value = this.properties.value.split('');
-              this.properties.value.splice(this.getCaretPos(), 1);
-              this.properties.value = this.properties.value.join('');
-              document.querySelector('.window-enter').value = this.properties.value;
-              this.set(document.querySelector('.window-enter'), a, a);
-              break;
+                this.properties.value = document.querySelector('.window-enter').value;
+                this.properties.value = this.properties.value.split('');
+                this.properties.value.splice(this.getCaretPos(), 1);
+                this.properties.value = this.properties.value.join('');
+                document.querySelector('.window-enter').value = this.properties.value;
+                this.set(document.querySelector('.window-enter'), a, a);
+                break;
     
             default:
-              this.keyLayout.forEach((item) => {
-                if (item[2] === event.code) {
-                  if (!this.properties.isRussian) {
-                    if (!this.properties.capsLock) {
-                      document.querySelector('.window-enter').value += item[0].toLowerCase();
+                this.keyLayout.forEach((item) => {
+                    if (item[2] === event.code) {
+                        if (!this.properties.isRussian) {
+                            if (!this.properties.capsLock) {
+                                document.querySelector('.window-enter').value += item[0].toLowerCase();
+                            }
+                            if (this.properties.capsLock) {
+                                document.querySelector('.window-enter').value += item[0].toUpperCase();
+                            }
+                        } else {
+                            if (!this.properties.capsLock) {
+                                document.querySelector('.window-enter').value += item[1].toLowerCase();
+                            }
+                            if (this.properties.capsLock) {
+                                document.querySelector('.window-enter').value += item[1].toUpperCase();
+                            }
+                        }
                     }
-                    if (this.properties.capsLock) {
-                      document.querySelector('.window-enter').value += item[0].toUpperCase();
-                    }
-                  } else {
-                    if (!this.properties.capsLock) {
-                      document.querySelector('.window-enter').value += item[1].toLowerCase();
-                    }
-                    if (this.properties.capsLock) {
-                      document.querySelector('.window-enter').value += item[1].toUpperCase();
-                    }
-                  }
-                }
-              });
-          }
-          key.classList.add('active');
+                });
+            }
+            key.classList.add('active');
         });
         document.addEventListener('keyup', (event) => {
             const key = document.querySelector(`button[data-key='${event.code}']`);
             if (event.code === 'ShiftLeft') {
-              this.toggleCapsLock();
+                this.toggleCapsLock();
             }
             key.classList.remove('active');
-          });
+        });
+        function runOnKeys(func, ...codes) {
+            const pressed = new Set();
+      
+            document.addEventListener('keydown', (event) => {
+                pressed.add(event.code);
+      
+                for (let i = 0; i < codes.length; i += 1) {
+                    if (!pressed.has(codes[i])) {
+                        return;
+                    }
+                }
+      
+                pressed.clear();
+                func();
+            });
+      
+            document.addEventListener('keyup', (event) => {
+                pressed.delete(event.code);
+            });
+        }
+      
+        runOnKeys(
+            () => {
+                setTimeout(() => {
+                    this.properties.isRussian = !this.properties.isRussian;
+                    document.querySelector('.keyboard').remove();
+                    this.initVirtual();
+                }, 100);
+            },
+            'ControlLeft',
+            'AltLeft',
+        );
+    }
 }
