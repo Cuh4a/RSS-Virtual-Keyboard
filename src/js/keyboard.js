@@ -1,6 +1,5 @@
-/* eslint-disable no-return-assign */
+/* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
-/* eslint-disable no-unused-vars */
 
 class Keyboard {
     constructor() {
@@ -83,7 +82,6 @@ class Keyboard {
         ];
     }
 
-   
 
     initTextarea() {
         this.elements.textarea = document.createElement('textarea');
@@ -103,18 +101,19 @@ class Keyboard {
         this.elements.main.append(this.elements.keysContainer);
         document.body.append(this.elements.main);
 
+
         if (this.properties.isRussian === false) {
-            localStorage.setItem('lang', 'false');
+            localStorage.setItem('lang', false);
         }
 
         if (this.properties.isRussian === true) {
-            localStorage.setItem('lang', 'true');
+            localStorage.setItem('lang', true);
         }
+       
     }
 
     createKeys() {
         const fragment = document.createDocumentFragment();
-
         this.keyLayout.forEach((key) => {
             const keyElement = document.createElement('button');
             const insertLineBreak = ['Backspace', 'Delete', 'Enter', 'ShiftRight'].indexOf(key[2]) !== -1;
@@ -286,12 +285,13 @@ class Keyboard {
                 const a = key[0];
                 const b = key[1];
                 let lenguageLetter;
+                
                 if (!this.properties.isRussian) {
                     lenguageLetter = a;
                 } else {
                     lenguageLetter = b;
                 }
-
+    
                 keyElement.textContent = lenguageLetter.toLowerCase();
                 keyElement.addEventListener('click', () => {
                     if (this.properties.capsLock) {
@@ -340,7 +340,7 @@ class Keyboard {
     getCaretPos() {
         const obj = document.querySelector('.window-enter');
         obj.focus();
-        if (document.selection) { // IE
+        if (document.selection) {
             const sel = document.selection.createRange();
             const clone = sel.duplicate();
             sel.collapse(true);
@@ -348,7 +348,7 @@ class Keyboard {
             clone.setEndPoint('EndToEnd', sel);
             return clone.text.length;
         }
-        if (obj.selectionStart !== false) return obj.selectionStart; // Gecko
+        if (obj.selectionStart !== false) return obj.selectionStart;
         return 0;
     }
 
@@ -412,6 +412,9 @@ class Keyboard {
                 break;
 
             default:
+                console.log(this.properties.isRussian);
+                console.log(this.properties.storage);
+             
                 this.keyLayout.forEach((item) => {
                     if (item[2] === event.code) {
                         if (!this.properties.isRussian) {
@@ -476,14 +479,11 @@ class Keyboard {
         );
     }
 
-    getStorage() {
-        const lang = localStorage.getItem(this.properties.isRussian);
-        return lang;
-    }
 }
 const keyboard = new Keyboard();
 
 window.addEventListener('DOMContentLoaded', () => {
+    // keyboard.language();
     keyboard.initTextarea();
     keyboard.initVirtual();
     keyboard.initReal();
@@ -500,6 +500,3 @@ instruction.classList.add('instruction');
 instruction.innerHTML = `Клавиатура создана в ОС Windows <br>
      Для переключения языка комбинация: левыe ctrl + alt`;
 document.body.after(instruction);
-
-// eslint-disable-next-line no-console
-console.log(keyboard.properties.isRussian = keyboard.getStorage());
